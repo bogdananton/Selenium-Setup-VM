@@ -1,1 +1,1 @@
-# phpunit-selenium-vagrant
+After running "vagrant up", see tests/testRemoteSelenium.php's doc block.
