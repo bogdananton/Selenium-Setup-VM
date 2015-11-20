@@ -7,3 +7,11 @@
 3. `git clone https://github.com/bogdananton/phpunit-selenium-vagrant.git`
 4. `cd phpunit-selenium-vagrant`
 5. `vagrant up`
+6. Wait until the box is downloaded and installed. This might take a while.
+7. In the end the self check test suite will run for `phpunit-selenium-vagrant`
+
+To repeat the Selenium check-up manually, follow these steps:
+
+1. ssh to your vagrant box
+2. `cd phpunit-selenium-vagrant`
+3. `php phing-latest.phar`
