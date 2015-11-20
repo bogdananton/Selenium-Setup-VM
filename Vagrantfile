@@ -34,5 +34,25 @@ Vagrant.configure(2) do |config|
 	
 	# Assure that SSH Agent is running (used to add keys to the known_hosts in ~/.ssh)
 	eval `ssh-agent -s`
+	
+        # run virtual X server
+        sudo apt-get install -y xvfb
+        export DISPLAY=:99.0
+        /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
+
+        # get phpunit-selenium-env repo
+        git clone https://github.com/bogdananton/phpunit-selenium-env
+        cd phpunit-selenium-env
+
+        # prepare build
+        wget http://www.phing.info/get/phing-latest.phar
+        chmod +x phing-latest.phar
+
+        # run build and tests
+        php phing-latest.phar
+
+	# Reset ownership of phpunit-selenium-vagrant folder to the vagrant user.
+        sudo chown vagrant:vagrant -R ./
+	
   SHELL
 end
