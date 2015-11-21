@@ -9,12 +9,12 @@ if ! $vagrantInstalled && $virtualboxInstalled ; then
     echo "Found distribution ID: ${distroId:3}" # @todo check if the pattern is ok
 
     if [ "${distroId:3}" == "antergos" ]; then
-        # will (re)install packages after syncronization and not ask for confirmation
-        sudo pacman -S --noconfirm vagrant virtualbox
+        # will (re)install packages after syncronization and not ask for confirmation. Warning: this could break your virtualbox install.
+        sudo pacman -S --noconfirm vagrant virtualbox virtualbox-host-dkms net-tools
 
     elif [ "${distroId:3}" == "Ubuntu" ]; then
         # fixme untested yet (lowercase/uppercase)
-        sudo apt-get -y install vagrant virtualbox
+        sudo apt-get -y install vagrant virtualbox virtualbox-host-dkms net-tools
     else
         echo "Error: Install vagrant and virtualbox manually or add a command in this install.sh file."
         exit
