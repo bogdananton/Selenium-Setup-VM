@@ -1,15 +1,24 @@
 Vagrant.configure(2) do |config|
+    http_proxy = "#{ENV['http_proxy']}"
+
+    unless http_proxy == ""
+        p "Set machine proxy to #{http_proxy}"
+        config.proxy.http = #{http_proxy}
+        config.proxy.https = #{http_proxy}
+        config.proxy.no_proxy = "localhost,127.0.0.1,.local"
+    end
+
     config.vm.box = "ubuntu/vivid64"
     config.vm.box_check_update = false
     config.vm.network "forwarded_port", guest: 80, host: 83
 
-    # config.proxy.http = "http://proxy.avangate.local:8080"
-    # config.proxy.https = "http://proxy.avangate.local:8080"
-    # config.proxy.no_proxy = "localhost,127.0.0.1,.avangate"
-
     config.vm.provision "shell", inline: <<-SHELL
-        # export http_proxy='http://proxy.avangate.local:8080'
-        # export https_proxy='http://proxy.avangate.local:8080'
+        # @todo check unix/win lower/uppercase for http/https proxy env setting
+        if ! [ -z #{http_proxy} ]; then
+            echo "Setting environment variables http_proxy and https_proxy to #{http_proxy}"
+            export http_proxy=http_proxy
+            export https_proxy=https_proxy
+        fi
 
         # Google Chrome sources
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
@@ -55,4 +64,6 @@ Vagrant.configure(2) do |config|
         vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
     end
+
+    # raise(Exception, "-> stop <-")
 end
