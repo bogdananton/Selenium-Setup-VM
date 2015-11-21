@@ -1,7 +1,7 @@
 Vagrant.configure(2) do |config|
     http_proxy = "#{ENV['http_proxy']}"
 
-    unless #{http_proxy} == ""
+    unless "#{http_proxy}" == ""
         p "Set machine proxy to #{http_proxy}"
         config.proxy.http = #{http_proxy}
         config.proxy.https = #{http_proxy}
