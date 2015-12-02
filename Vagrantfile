@@ -1,13 +1,20 @@
 Vagrant.configure(2) do |config|
-    http_proxy = "#{ENV['http_proxy']}"
     vagrant_startx = "#{ENV['vagrant_startx']}"
 
-    unless "#{http_proxy}" == ""
-        p "Set machine proxy to #{http_proxy}"
-        config.proxy.http = #{http_proxy}
-        config.proxy.https = #{http_proxy}
-        config.proxy.no_proxy = "localhost,127.0.0.1,.local"
-    end
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+	puts "Vagrant proxy plugin found ..."
+	if ENV["http_proxy"]
+	  puts "http_proxy: " + ENV["http_proxy"]
+	  config.proxy.http     = ENV["http_proxy"]
+	end
+	if ENV["https_proxy"]
+	  puts "https_proxy: " + ENV["https_proxy"]
+	  config.proxy.https    = ENV["https_proxy"]
+	end
+	if ENV["no_proxy"]
+	  config.proxy.no_proxy = ENV["no_proxy"]
+	end
+  end
 
     config.vm.box = "ubuntu/vivid64"
     config.vm.box_check_update = false
@@ -15,10 +22,10 @@ Vagrant.configure(2) do |config|
 
     config.vm.provision "shell", inline: <<-SHELL
         # @todo check unix/win lower/uppercase for http/https proxy env setting
-        if ! [ -z #{http_proxy} ]; then
-            echo "Setting environment variables http_proxy and https_proxy to #{http_proxy}"
-            export http_proxy=http_proxy
-            export https_proxy=https_proxy
+        if ! [ -z ENV["http_proxy"] ]; then
+            echo "Setting environment variables ..."
+            export http_proxy=ENV["http_proxy"]
+            export https_proxy=ENV["https_proxy"]
         fi
 
         # Google Chrome sources
@@ -60,7 +67,6 @@ Vagrant.configure(2) do |config|
             sudo chown vagrant:vagrant /home/vagrant/.xinitrc
             echo -e "openbox" > /home/vagrant/.xinitrc
 
-            # @todo maybe add "export http_proxy=#{http_proxy}" in bash_profile
         fi
 
         # run virtual X server
