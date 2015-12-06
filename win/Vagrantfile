@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "ferventcoder/win7pro-x64-nocm-lite"
+
+  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "public_network"
+
+  config.vm.provider "virtualbox" do |vb|
+     # Display the VirtualBox GUI when booting the machine
+     vb.gui = true
+     vb.memory = "1024"
+   end
+
+  # @todo add provisioning: install git, jre, php, browsers (for a quicker install, use ninite.com), add to path, run selfTest
+  # @todo open port to outside
+  # @todo set Selenium from environment (temporary set on provision)
+  # @todo check with proxies
+  # @todo choose internet explorer version when provisioning machine (or install all and choose IE version from Selenium-Setup)
+end

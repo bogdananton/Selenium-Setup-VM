@@ -2,6 +2,7 @@ Vagrant.configure(2) do |config|
     http_proxy = "#{ENV['http_proxy']}"
     vagrant_startx = "#{ENV['vagrant_startx']}"
 
+    # @todo improve this. use http_proxy and https_proxy separately
     unless "#{http_proxy}" == ""
         p "Set machine proxy to #{http_proxy}"
         config.proxy.http = #{http_proxy}
@@ -13,8 +14,10 @@ Vagrant.configure(2) do |config|
     config.vm.box_check_update = false
     config.vm.network "forwarded_port", guest: 80, host: 83
 
+    # @todo set fixed http_proxy / https_proxy in ~/.bashrc
+
     config.vm.provision "shell", inline: <<-SHELL
-        # @todo check unix/win lower/uppercase for http/https proxy env setting
+        # @todo check unix/win (host) lower/uppercase for http/https proxy env setting
         if ! [ -z #{http_proxy} ]; then
             echo "Setting environment variables http_proxy and https_proxy to #{http_proxy}"
             export http_proxy=http_proxy
@@ -71,19 +74,19 @@ Vagrant.configure(2) do |config|
         eval `ssh-agent -s`
 
         # Get phpunit-selenium-env repo
-        git clone https://github.com/bogdananton/phpunit-selenium-env
-        cd phpunit-selenium-env
+        git clone https://github.com/bogdananton/Selenium-Setup
+        cd Selenium-Setup
 
         # prepare build
-        wget http://www.phing.info/get/phing-latest.phar
-        chmod +x phing-latest.phar
+        wget https://getcomposer.org/composer.phar
+        chmod +x composer.phar
 
         # run build and tests
-        php phing-latest.phar
+        php composer.phar install
+        php bin/selenium-setup.php selfTest
 
         # Reset ownership of phpunit-selenium-vagrant folder to the vagrant user.
         sudo chown vagrant:vagrant -R ./
-
     SHELL
 
     config.vm.provider "virtualbox" do |vb|
