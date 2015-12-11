@@ -1,19 +1,15 @@
-# @todo check unix/win lower/uppercase for http/https proxy env setting
-if ! [ -z ENV["http_proxy"] ]; then
-    echo "Setting environment variables ..."
-    export http_proxy=ENV["http_proxy"]
-    export https_proxy=ENV["https_proxy"]
-fi
-
-# Google Chrome sources
- wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
- sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-
-# Sync Ubuntu packages
- sudo apt-get update
-
-# Install dependencies
- sudo apt-get install -y xvfb git curl default-jre openjdk-7-jre google-chrome-stable firefox apache2 php5 php5-memcache php5-curl php5-mysql
+# # Google Chrome sources
+# # wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+# # sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+#
+# # Sync Ubuntu packages
+# # sudo apt-get update # @temporary ignore
+#
+# # Install dependencies
+# # sudo apt-get install -y xvfb git curl default-jre openjdk-7-jre google-chrome-stable firefox apache2 php5 php5-memcache php5-curl php5-mysql
+#
+# # @note slimmer install (ignore the browsers and java), focus on connectivity and login
+sudo apt-get install -y git curl php5 php5-curl
 
 # Set vagrant user as owner over his home folder
 sudo chown vagrant:vagrant -R /home/vagrant
@@ -54,15 +50,12 @@ export DISPLAY=:99.0
 eval `ssh-agent -s`
 
 # Get phpunit-selenium-env repo
-git clone https://github.com/bogdananton/phpunit-selenium-env
-cd phpunit-selenium-env
+git clone https://github.com/bogdananton/Selenium-Setup
+cd Selenium-Setup
 
 # prepare build
-wget http://www.phing.info/get/phing-latest.phar
-chmod +x phing-latest.phar
-
-# run build and tests
-php phing-latest.phar
+composer update
+php bin/selenium-setup.php start
 
 # Reset ownership of phpunit-selenium-vagrant folder to the vagrant user.
 sudo chown vagrant:vagrant -R ./
