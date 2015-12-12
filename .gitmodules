@@ -1,0 +1,3 @@
+[submodule "Vagrant-Virtualbox-Win7-IE11"]
+	path = Vagrant-Virtualbox-Win7-IE11
+	url = https://github.com/bogdananton/Selenium-Setup-VM-Win7-IE11
