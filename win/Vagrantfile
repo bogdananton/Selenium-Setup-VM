@@ -1,52 +1,20 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$script = <<SCRIPT
-# Source: https://raw.githubusercontent.com/mwrock/vagrantfile/master/WinRubyX64
-iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-
-choco install git -y
-choco install phantomjs -y
-choco install php5-dev -y
-choco install google-chrome-x64 -y
-choco install opera -y
-choco install firefox -y
-choco install composer -y
-
-cd /
-git clone https://github.com/bogdananton/Selenium-Setup.git
-cd Selenium-Setup
-
-composer update
-php bin/selenium-server.php start
-
-SCRIPT
-
-# install git, php, composer
-# do clone repo, run composer update, start server and listen
-# from the outside, run autotest manually (different repo)
-
 Vagrant.configure(2) do |config|
-  config.vm.box = "mwrock/Windows2012R2"
-  config.vm.provision "shell", inline: $script
-  config.vm.guest = :windows
+    config.vm.box = "ferventcoder/win7pro-x64-nocm-lite"
 
-  config.vm.provider "hyperv" do |hv|
-    hv.ip_address_timeout = 240
-    hv.memory = 2048
-    hv.cpus = 2
-  end
+    config.vm.box_check_update = false
+    config.vm.network "forwarded_port", guest: 4444, host: 4446
+    config.vm.guest = :windows
+    config.ssh.insert_key = false
+    config.vm.synced_folder '.', '/vagrant'
 
-  config.vm.provider :virtualbox do |vb|
-    vb.gui = true
-    vb.memory = 2048
-    vb.cpus = 2
-    vb.network "forwarded_port", guest: 4444, host: 4444
-  end
+    # config.vm.provision :shell, path: "bootstrap.ps1"     # (see #7)
 
-  # @todo add provisioning: install git, jre, php, browsers (for a quicker install, use ninite.com), add to path, run selfTest
-  # @todo open port to outside
-  # @todo set Selenium from environment (temporary set on provision)
-  # @todo check with proxies
-  # @todo choose internet explorer version when provisioning machine (or install all and choose IE version from Selenium-Setup)
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+        vb.cpus = "1"
+    end
 end
+

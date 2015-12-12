@@ -1,0 +1,6 @@
+{
+  "require": {
+    "php": "^5.4",
+    "facebook/webdriver": "1.0.*"
+  }
+}
