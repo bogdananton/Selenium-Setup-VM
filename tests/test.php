@@ -1,4 +1,5 @@
 <?php
+# remove this. debug purpose only
 namespace tests;
 
 require_once 'vendor/autoload.php';
