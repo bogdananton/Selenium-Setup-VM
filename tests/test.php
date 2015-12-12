@@ -17,7 +17,7 @@ class SampleFirefoxTest extends \PHPUnit_Framework_TestCase
     /** @var RemoteWebDriver */
     protected $webDriver;
 
-    const HOST = '127.0.0.1:4445';
+    const HOST = '127.0.0.1:4444';
 
     /**
      * Get custom window size
