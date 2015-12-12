@@ -17,17 +17,21 @@ class SampleFirefoxTest extends \PHPUnit_Framework_TestCase
     /** @var RemoteWebDriver */
     protected $webDriver;
 
+    const HOST = '127.0.0.1:4445';
+
     /**
      * Get custom window size
      */
     public function testGetCustomWindowSize()
     {
         $capabilities = [WebDriverCapabilityType::BROWSER_NAME => 'firefox'];
-        $this->webDriver = RemoteWebDriver::create('http://127.0.0.1:4446/wd/hub', $capabilities);
+        $this->webDriver = RemoteWebDriver::create('http://' . self::HOST . '/wd/hub', $capabilities);
 
         $this->webDriver->manage()->window()->setSize(new WebDriverDimension(640, 900));
         $this->webDriver->get('http://whatsmy.browsersize.com/');
-        self::assertEquals(632, $this->webDriver->findElement(WebDriverBy::id('info_ww'))->getText());
+
+        $foundWidth = $this->webDriver->findElement(WebDriverBy::id('info_ww'))->getText();
+        self::assertTrue($foundWidth == 640 || $foundWidth == 632, $foundWidth);
     }
 
     /**
@@ -43,7 +47,7 @@ class SampleFirefoxTest extends \PHPUnit_Framework_TestCase
         $profile = $capabilities->getCapability(FirefoxDriver::PROFILE);
         $profile->setPreference('general.useragent.override', $useragent);
 
-        $this->webDriver = RemoteWebDriver::create('http://127.0.0.1:4446/wd/hub', $capabilities);
+        $this->webDriver = RemoteWebDriver::create('http://' . self::HOST . '/wd/hub', $capabilities);
 
         // test
         $this->webDriver->get('http://demo.mobiledetect.net/');
