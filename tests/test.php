@@ -32,6 +32,8 @@ class SampleFirefoxTest extends \PHPUnit_Framework_TestCase
 
         $foundWidth = $this->webDriver->findElement(WebDriverBy::id('info_ww'))->getText();
         self::assertTrue($foundWidth == 640 || $foundWidth == 632, $foundWidth);
+        
+        $this->webDriver->quit();
     }
 
     /**
@@ -58,10 +60,6 @@ class SampleFirefoxTest extends \PHPUnit_Framework_TestCase
         $elementContainingQuestion = $elements[1];
 
         static::assertEquals('Is your device really a phone?', $elementContainingQuestion->getText());
-    }
-
-    public function tearDown()
-    {
         $this->webDriver->quit();
     }
 }
